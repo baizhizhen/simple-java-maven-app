@@ -9,7 +9,16 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
-                sh 'mvn findbugs:findbugs'
+            }
+        }
+        stage('Sonarqube'){
+            steps{
+                dir(env.WORKSPACE){
+                    sh "mvn sonar:sonar \
+                          -Dsonar.projectKey=net.shuzun:product-parent \
+                          -Dsonar.host.url=http://192.168.40.134:9000 \
+                          -Dsonar.login=0c498dd24176db710f205a82af47564cb11c178e"
+                }
             }
         }
         stage('Test') {
